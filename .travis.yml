@@ -4,12 +4,9 @@ jdk:
   - oraclejdk8
   - oraclejdk7
 
-
 cache:
   directories:
   - $HOME/.gradle
 
-install:
-    - ./gradlew wrapper -PgradleVersion=$GRADLE_VERSION
 
 script: ./gradlew build
