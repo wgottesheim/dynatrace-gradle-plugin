@@ -11,11 +11,15 @@ apply plugin: 'groovy'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 
+repositories{
+    mavenCentral()
+}
+
 dependencies {
     compile localGroovy()
     compile gradleApi()
     testCompile gradleTestKit()
-    testCompile "org.junit:junit:4.12"
+    testCompile "junit:junit:4.12"
 }
 
 jacoco{
