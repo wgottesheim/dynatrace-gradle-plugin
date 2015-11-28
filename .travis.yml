@@ -11,3 +11,6 @@ cache:
 
 
 script: ./gradlew build
+
+after_success:
+- ./gradlew jacocoTestReport coveralls
