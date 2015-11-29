@@ -29,13 +29,13 @@ public class FetchAgentTaskTest {
         when(task.getPluginExtension()).thenReturn(new PluginExtension(project));
         when(task.getOperatingSystem()).thenReturn(OperatingSystem.WINDOWS);
 
-        def url = task.getDownloadUrl();
+        def url = task.getDownloadUrl(OperatingSystem.WINDOWS);
         assertThat(url, Matchers.endsWith("dynatrace-agent.msi"))
         assertThat(url, Matchers.containsString(PluginExtension.DEFAULT_VERSION))
 
 
         when(task.getOperatingSystem()).thenReturn(OperatingSystem.UNIX)
-        url = task.getDownloadUrl();
+        url = task.getDownloadUrl(OperatingSystem.UNIX);
         assertThat(url, Matchers.endsWith("dynatrace-agent-unix.jar"))
         assertThat(url, Matchers.containsString(PluginExtension.DEFAULT_VERSION))
     }
@@ -76,7 +76,7 @@ public class FetchAgentTaskTest {
         when(task.getPluginExtension()).thenReturn(extension);
 
         final File tmpFolder = folder.newFolder()
-        new File(tmpFolder, FetchAgentTask.LOCAL_CHECKSUM_FILE_NAME).text = new URL(task.getDownloadUrl() + ".md5").text
+        new File(tmpFolder, FetchAgentTask.LOCAL_CHECKSUM_FILE_NAME).text = new URL(task.getDownloadUrl(OperatingSystem.current()) + ".md5").text
         when(extension.downloadFolder).thenReturn(tmpFolder)
         Assert.assertTrue(task.checkChecksum())
     }

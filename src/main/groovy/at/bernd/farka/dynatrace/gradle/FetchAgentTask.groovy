@@ -14,22 +14,32 @@ class FetchAgentTask extends DefaultTask {
 
     public FetchAgentTask() {
         getOutputs().upToDateWhen {
-
+            checkChecksum()
         }
     }
 
 
     public void download() {
+        if (OperatingSystem.current() == OperatingSystem.WINDOWS) {
+            downloadWindows();
+        } else {
+            downloadLinux();
+        }
+    }
 
+    public void downloadWindows() {
 
     }
 
+    public void downloadLinux() {
+
+    }
 
     boolean checkChecksum() {
         final File downloadFolder = getPluginExtension().downloadFolder
         final File checkSumFile = new File(downloadFolder, LOCAL_CHECKSUM_FILE_NAME)
         if (checkSumFile.exists()) {
-            final String remoteCheckSum = new URL(getDownloadUrl() + ".md5").text;
+            final String remoteCheckSum = new URL(getDownloadUrl(getOperatingSystem()) + ".md5").text;
             final String localCheckSum = checkSumFile.text
             return remoteCheckSum.trim().equals(localCheckSum.trim());
         }
@@ -44,10 +54,10 @@ class FetchAgentTask extends DefaultTask {
         return project.getExtensions().findByName(DynatraceGradlePlugin.EXTENSION_NAME);
     }
 
-    String getDownloadUrl() {
+    String getDownloadUrl(OperatingSystem os) {
         def templateString;
 
-        if (getOperatingSystem() == OperatingSystem.WINDOWS) {
+        if (os == OperatingSystem.WINDOWS) {
             templateString = URL_TEMPLATE_WINDOWS;
         } else {
             templateString = URL_TEMPLATE_UNIX;
