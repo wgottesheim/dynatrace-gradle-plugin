@@ -8,6 +8,8 @@ import org.gradle.internal.os.OperatingSystem
  */
 class FetchAgentTask extends DefaultTask {
 
+    private static String URL_TEMPLATE = "http://downloads.dynatracesaas.com/6.2/"
+
 
     public void download(){
         OperatingSystem.current()

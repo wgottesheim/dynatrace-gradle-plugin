@@ -1,3 +1,5 @@
+package at.bernd.farka.dynatrace.gradle
+
 import org.junit.Test
 
 /**
