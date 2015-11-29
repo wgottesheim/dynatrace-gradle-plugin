@@ -10,9 +10,11 @@ import org.gradle.api.Project
 class DynatraceGradlePlugin implements Plugin<Project> {
 
     public static final String EXTENSION_NAME = "dynatrace"
+    public static final String FETCH_AGENT_TASK_NAME = "fetchDynatraceAgent"
 
     @Override
     void apply(Project project) {
         project.extensions.add(EXTENSION_NAME, new PluginExtension(project))
+        project.tasks.create(FETCH_AGENT_TASK_NAME, FetchAgentTask)
     }
 }

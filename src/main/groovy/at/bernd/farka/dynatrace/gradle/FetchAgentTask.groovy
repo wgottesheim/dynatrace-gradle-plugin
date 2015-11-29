@@ -10,11 +10,30 @@ class FetchAgentTask extends DefaultTask {
 
     private static String URL_TEMPLATE_UNIX = 'http://downloads.dynatracesaas.com/%1$s/dynatrace-agent-unix.jar'
     private static String URL_TEMPLATE_WINDOWS = 'http://downloads.dynatracesaas.com/%1$s/dynatrace-agent.msi'
+    public static final String LOCAL_CHECKSUM_FILE_NAME = "checksum.md5";
+
+    public FetchAgentTask() {
+        getOutputs().upToDateWhen {
+
+        }
+    }
 
 
     public void download() {
 
 
+    }
+
+
+    boolean checkChecksum() {
+        final File downloadFolder = getPluginExtension().downloadFolder
+        final File checkSumFile = new File(downloadFolder, LOCAL_CHECKSUM_FILE_NAME)
+        if (checkSumFile.exists()) {
+            final String remoteCheckSum = new URL(getDownloadUrl() + ".md5").text;
+            final String localCheckSum = checkSumFile.text
+            return remoteCheckSum.trim().equals(localCheckSum.trim());
+        }
+        return false;
     }
 
     OperatingSystem getOperatingSystem() {
