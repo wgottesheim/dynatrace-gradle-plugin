@@ -7,6 +7,6 @@ class PluginExtension {
 
     public static final String DEFAULT_VERSION = "6.2"
 
-    public dynatraceVersion = DEFAULT_VERSION;
+    String dynatraceVersion = DEFAULT_VERSION;
 
 }
