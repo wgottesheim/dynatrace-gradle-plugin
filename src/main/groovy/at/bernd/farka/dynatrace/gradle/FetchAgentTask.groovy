@@ -1,7 +1,10 @@
 package at.bernd.farka.dynatrace.gradle
 
+import com.google.common.io.Files
 import org.gradle.api.DefaultTask
 import org.gradle.internal.os.OperatingSystem
+
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by bernd on 28.11.2015.
@@ -28,6 +31,30 @@ class FetchAgentTask extends DefaultTask {
     }
 
     public void downloadWindows() {
+        final URL downloadUrl = new URL(getDownloadUrl(OperatingSystem.WINDOWS));
+        File msiFile = File.createTempFile("dynatrace", "msi");
+        msiFile.deleteOnExit();
+        logger.info("downloading Dynatrace agent " + downloadUrl.toString())
+        //msiexec /a f:\zenworks\zfdagent.msi /qb TARGETDIR=c:\zfd701
+        downloadUrl.withInputStream { input ->
+            msiFile.withOutputStream { out ->
+                out << input
+            }
+        }
+        File tmpFolder = File.createTempDir("dynatrace", "agents")
+        logger.info("extracting Dynatrace agent");
+        ProcessBuilder builder = new ProcessBuilder();
+        builder.command("msiexec", "/a", msiFile.getAbsolutePath(), "/qb", "TARGETDIR=${tmpFolder.getAbsolutePath()}")
+        Process process = builder.start()
+        process.waitForOrKill(TimeUnit.MINUTES.toMillis(1))
+
+        final File targetDir = getPluginExtension().getDownloadFolder()
+        final File libFolder = new File(targetDir, "lib");
+        final File libFolder64 = new File(targetDir, "lib64");
+        libFolder.mkdir()
+        libFolder64.mkdir()
+        Files.copy(new File(tmpFolder, "agent/lib/dtagent.dll"), new File(libFolder, "dtagent.dll"))
+        Files.copy(new File(tmpFolder, "agent/lib64/dtagent.dll"), new File(libFolder64, "dtagent.dll"))
 
     }
 

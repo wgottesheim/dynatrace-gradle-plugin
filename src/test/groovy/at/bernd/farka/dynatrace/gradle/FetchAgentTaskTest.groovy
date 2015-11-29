@@ -4,12 +4,14 @@ import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import org.hamcrest.Matchers
 import org.junit.Assert
+import org.junit.Assume
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.mockito.Mockito
 
 import static org.junit.Assert.assertThat
+import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.when
 
@@ -78,6 +80,17 @@ public class FetchAgentTaskTest {
         final File tmpFolder = folder.newFolder()
         new File(tmpFolder, FetchAgentTask.LOCAL_CHECKSUM_FILE_NAME).text = new URL(task.getDownloadUrl(OperatingSystem.current()) + ".md5").text
         when(extension.downloadFolder).thenReturn(tmpFolder)
-        Assert.assertTrue(task.checkChecksum())
+        assertTrue(task.checkChecksum())
+    }
+
+    @Test
+    public void testDownloadWindows() {
+        Assume.assumeThat(OperatingSystem.current(), Matchers.equalTo(OperatingSystem.WINDOWS))
+        Project project = org.gradle.testfixtures.ProjectBuilder.builder().build()
+        project.apply plugin: "dynatrace-gradle-plugin"
+        FetchAgentTask task = spy(project.tasks.create("fetch", FetchAgentTask));
+        task.downloadWindows();
+        assertTrue(new File(task.getPluginExtension().getDownloadFolder(), "lib/dtagent.dll").isFile())
+        assertTrue(new File(task.getPluginExtension().getDownloadFolder(), "lib64/dtagent.dll").isFile())
     }
 }
