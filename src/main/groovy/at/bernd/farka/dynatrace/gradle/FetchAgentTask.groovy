@@ -5,6 +5,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.internal.os.OperatingSystem
 
 import java.util.concurrent.TimeUnit
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 
 /**
  * Created by bernd on 28.11.2015.
@@ -59,7 +61,29 @@ class FetchAgentTask extends DefaultTask {
     }
 
     public void downloadLinux() {
+        final URL downloadUrl = new URL(getDownloadUrl(OperatingSystem.UNIX));
+        downloadUrl.withInputStream { input ->
+            final ZipInputStream zis = new ZipInputStream(input)
+            ZipEntry entry;
+            final File targetDir = getPluginExtension().getDownloadFolder()
+            final File libFolder = new File(targetDir, "lib");
+            final File libFolder64 = new File(targetDir, "lib64");
+            libFolder.mkdir()
+            libFolder64.mkdir()
+            while ((entry = zis.nextEntry) != null) {
+                println entry.name
+                if ("agent/linux-x86-32/agent/lib/libdtagent.so".equals(entry.name)) {
+                    new File(libFolder, "libdtagent.so").withOutputStream { fos ->
+                        fos << zis
+                    }
+                } else if ("agent/linux-x86-64/agent/lib64/libdtagent.so".equals(entry.name)) {
+                    new File(libFolder64, "libdtagent.so").withOutputStream { fos ->
+                        fos << zis
+                    }
+                }
 
+            }
+        }
     }
 
     boolean checkChecksum() {

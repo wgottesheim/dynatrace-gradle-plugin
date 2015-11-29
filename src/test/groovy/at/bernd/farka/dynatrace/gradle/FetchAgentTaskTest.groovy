@@ -93,4 +93,14 @@ public class FetchAgentTaskTest {
         assertTrue(new File(task.getPluginExtension().getDownloadFolder(), "lib/dtagent.dll").isFile())
         assertTrue(new File(task.getPluginExtension().getDownloadFolder(), "lib64/dtagent.dll").isFile())
     }
+
+    @Test
+    public void testDownloadLinux() {
+        Project project = org.gradle.testfixtures.ProjectBuilder.builder().build()
+        project.apply plugin: "dynatrace-gradle-plugin"
+        FetchAgentTask task = spy(project.tasks.create("fetch", FetchAgentTask));
+        task.downloadLinux()
+        assertTrue(new File(task.getPluginExtension().getDownloadFolder(), "lib/libdtagent.so").isFile())
+        assertTrue(new File(task.getPluginExtension().getDownloadFolder(), "lib64/libdtagent.so").isFile())
+    }
 }
