@@ -15,9 +15,12 @@ class DynatraceGradlePluginTest {
 
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'dynatrace-gradle-plugin'
-        def extension = project.extensions.findByName(DynatraceGradlePlugin.EXTENSION_NAME)
+        PluginExtension extension = project.extensions.findByName(DynatraceGradlePlugin.EXTENSION_NAME)
         Assert.assertNotNull(extension)
         Assert.assertTrue(extension instanceof PluginExtension)
+
+        Assert.assertTrue(extension.downloadFolder.exists())
+        Assert.assertTrue(extension.downloadFolder.isDirectory())
     }
 
 }

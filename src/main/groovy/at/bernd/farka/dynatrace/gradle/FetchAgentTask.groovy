@@ -13,7 +13,8 @@ class FetchAgentTask extends DefaultTask {
 
 
     public void download() {
-        OperatingSystem.current()
+
+
     }
 
     OperatingSystem getOperatingSystem() {

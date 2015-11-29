@@ -1,5 +1,6 @@
 package at.bernd.farka.dynatrace.gradle
 
+import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import org.hamcrest.Matchers
 import org.junit.Test
@@ -16,9 +17,10 @@ public class FetchAgentTaskTest {
 
     @Test
     public void testDownloadUrl() {
+        Project project = org.gradle.testfixtures.ProjectBuilder.builder().build()
 
-        FetchAgentTask task = Mockito.spy(org.gradle.testfixtures.ProjectBuilder.builder().build().tasks.create("fetch", FetchAgentTask));
-        when(task.getPluginExtension()).thenReturn(new PluginExtension());
+        FetchAgentTask task = Mockito.spy(project.tasks.create("fetch", FetchAgentTask));
+        when(task.getPluginExtension()).thenReturn(new PluginExtension(project));
         when(task.getOperatingSystem()).thenReturn(OperatingSystem.WINDOWS);
 
         def url = task.getDownloadUrl();

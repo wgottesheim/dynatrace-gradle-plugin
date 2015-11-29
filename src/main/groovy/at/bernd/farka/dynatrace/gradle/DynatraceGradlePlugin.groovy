@@ -13,6 +13,6 @@ class DynatraceGradlePlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        project.extensions.add(EXTENSION_NAME, new PluginExtension())
+        project.extensions.add(EXTENSION_NAME, new PluginExtension(project))
     }
 }
